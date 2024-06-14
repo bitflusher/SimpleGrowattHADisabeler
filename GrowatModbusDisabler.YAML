@@ -1,0 +1,56 @@
+
+# Add to Home Assistant Config YAML
+#A switch to enable/disable your Growatt inverter will appear
+
+modbus:
+    name: "GroWatt"
+    type: serial
+    baudrate: 9600
+    bytesize: 8
+    method: rtu
+    parity: N
+    port: /dev/ttyUSB0
+    stopbits: 1
+    sensors:
+      - name: "Input_power_high"
+        address: 1
+        scan_interval: 10
+        slave: 1
+      - name: "Growatt Day"
+        input_type: input
+        address: 2
+        scan_interval: 5
+        slave: 1
+        scale: 0.0001
+        offset: 0
+        precision: 3
+        unit_of_measurement: kWh
+        state_class: measurement
+        device_class: energy
+      - name: "Growatt Day Generated"
+        input_type: input
+        address: 54
+        scan_interval: 5
+        slave: 1
+        offset: 0
+        scale: 0.1
+        unit_of_measurement: kWh
+        state_class: total
+        device_class: energy
+      - name: "Growatt status"
+        input_type: holding
+        address: 0
+        scan_interval: 10
+        slave: 1
+    switches:
+      - name: GrowattPV
+        slave: 1
+        address: 0
+        write_type: holding
+        command_on: 1
+        command_off: 0
+        verify:
+            input_type: holding
+            address: 0
+            state_on: 1
+            state_off: 0
